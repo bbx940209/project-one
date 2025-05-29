@@ -52,7 +52,7 @@
             src: url('https://fonts.cdnfonts.com/css/ds-digital');
         }
     </style>
-	
+
     <!-- 添加PWA相关代码 -->
     <link rel="manifest" href="manifest.json">
     <script>
@@ -68,8 +68,8 @@
         });
       }
     </script>
-	
-	    <!-- 添加iOS专用元标签 -->
+
+    <!-- 添加iOS专用元标签 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="时区新闻资讯">
@@ -85,14 +85,14 @@
             <i class="fa fa-globe mr-3"></i>全球时间与新闻
         </h1>
         <p class="text-gray-600 text-lg max-w-2xl mx-auto">
-            实时掌握北京时间与澳大利亚时间，了解两地最新动态
+            实时掌握北京时间、韩国时间和澳大利亚时间，了解三地最新动态
         </p>
     </header>
 
     <main class="container mx-auto px-4 py-8">
         <!-- 时间显示区域 -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <!-- 北京时间 -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <!-- 北京时间 (UTC+8) - 最早 -->
             <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl news-card-hover">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mr-3">
@@ -113,12 +113,38 @@
                         <i class="fa fa-info-circle mr-1"></i>中国标准时间 (CST) UTC+8
                     </div>
                     <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                        <i class="fa fa-sun-o mr-1"></i>当前时区
+                        <i class="fa fa-sun-o mr-1"></i>最早时区
                     </div>
                 </div>
             </div>
 
-            <!-- 澳大利亚时间 -->
+            <!-- 韩国时间 (UTC+9) - 中间 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl news-card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-white mr-3">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark">韩国时间</h2>
+                </div>
+                <div class="bg-neutral rounded-lg p-4">
+                    <div id="korea-time" class="text-[clamp(2.5rem,8vw,5rem)] font-digital text-yellow-500 text-shadow text-center">
+                        00:00:00
+                    </div>
+                    <div id="korea-date" class="text-center text-gray-600 mt-2">
+                        2025年5月29日 星期四
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        <i class="fa fa-info-circle mr-1"></i>韩国标准时间 (KST) UTC+9
+                    </div>
+                    <div class="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fa fa-compass mr-1"></i>中间时区
+                    </div>
+                </div>
+            </div>
+
+            <!-- 澳大利亚时间 (UTC+10) - 最晚 -->
             <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl news-card-hover">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white mr-3">
@@ -139,7 +165,7 @@
                         <i class="fa fa-info-circle mr-1"></i>澳大利亚东部标准时间 (AEST) UTC+10
                     </div>
                     <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-medium">
-                        <i class="fa fa-compass mr-1"></i>目标时区
+                        <i class="fa fa-moon-o mr-1"></i>最晚时区
                     </div>
                 </div>
             </div>
@@ -151,10 +177,10 @@
                 <h2 class="text-3xl font-bold text-dark mb-2">
                     <i class="fa fa-newspaper-o text-primary mr-2"></i>热门新闻
                 </h2>
-                <p class="text-gray-600">为您提供北京和澳大利亚的最新资讯</p>
+                <p class="text-gray-600">为您提供北京时间、韩国时间和澳大利亚时间对应地区的最新资讯</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- 中国新闻 -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="bg-primary text-white p-4">
@@ -164,6 +190,26 @@
                         </div>
                     </div>
                     <div id="china-news" class="p-4 max-h-[500px] overflow-y-auto">
+                        <!-- 骨架屏加载状态 -->
+                        <div class="animate-pulse space-y-4">
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 韩国新闻 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-yellow-500 text-white p-4">
+                        <div class="flex items-center">
+                            <i class="fa fa-newspaper-o mr-2"></i>
+                            <h2 class="text-xl font-semibold">韩国热门新闻</h2>
+                        </div>
+                    </div>
+                    <div id="korea-news" class="p-4 max-h-[500px] overflow-y-auto">
                         <!-- 骨架屏加载状态 -->
                         <div class="animate-pulse space-y-4">
                             <div class="h-12 bg-gray-200 rounded"></div>
@@ -210,12 +256,12 @@
             const scrolled = (winScroll / height) * 100;
             document.getElementById("scrollIndicator").style.width = scrolled + "%";
         });
-        
-		// 更新时间函数
+
+        // 更新时间函数
         function updateTime() {
             // 创建当前日期对象
             const now = new Date();
-            
+
             // 北京时间 (UTC+8)
             const beijingTime = now.toLocaleString('zh-CN', {
                 timeZone: 'Asia/Shanghai',
@@ -231,7 +277,23 @@
                 day: 'numeric',
                 weekday: 'long'
             });
-            
+
+            // 韩国时间 (UTC+9)
+            const koreaTime = now.toLocaleString('zh-CN', {
+                timeZone: 'Asia/Seoul',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const koreaDate = now.toLocaleDateString('zh-CN', {
+                timeZone: 'Asia/Seoul',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+
             // 澳大利亚时间 (UTC+10)
             const australiaTime = now.toLocaleString('zh-CN', {
                 timeZone: 'Australia/Sydney',
@@ -247,10 +309,12 @@
                 day: 'numeric',
                 weekday: 'long'
             });
-            
+
             // 更新DOM
             document.getElementById('beijing-time').textContent = beijingTime;
             document.getElementById('beijing-date').textContent = beijingDate;
+            document.getElementById('korea-time').textContent = koreaTime;
+            document.getElementById('korea-date').textContent = koreaDate;
             document.getElementById('australia-time').textContent = australiaTime;
             document.getElementById('australia-date').textContent = australiaDate;
         }
@@ -264,6 +328,14 @@
             { title: "中国新能源汽车销量连续8年全球第一，市场份额超50%", content: "中国汽车工业协会最新数据显示，我国新能源汽车销量连续8年位居全球第一，市场份额超过50%...", source: "经济日报", time: "12小时前", url: "https://example.com/news/china/5" }
         ];
 
+        const mockKoreaNews = [
+            { title: "韩国举办国际文化节，吸引全球游客", content: "韩国首尔近日举办了盛大的国际文化节，展示了丰富多样的文化艺术活动，吸引了来自世界各地的游客...", source: "韩国文化新闻", time: "4小时前", url: "https://example.com/news/korea/1" },
+            { title: "韩国科技企业发布新一代智能手机，性能大幅提升", content: "韩国知名科技企业今日发布了新一代智能手机，在性能、拍照和续航等方面都有了显著提升...", source: "韩国科技日报", time: "7小时前", url: "https://example.com/news/korea/2" },
+            { title: "韩国政府出台新的环保政策，推动绿色发展", content: "韩国政府近日出台了一系列新的环保政策，旨在减少碳排放，推动绿色可持续发展...", source: "韩国环境报", time: "10小时前", url: "https://example.com/news/korea/3" },
+            { title: "韩国足球联赛精彩继续，各队竞争激烈", content: "韩国足球联赛本周继续进行，各支球队都展现出了强大的实力，比赛精彩纷呈...", source: "韩国体育新闻", time: "12小时前", url: "https://example.com/news/korea/4" },
+            { title: "韩国传统美食文化走向世界，受国际认可", content: "韩国的传统美食如泡菜、烤肉等越来越受到国际社会的认可，韩国美食文化正逐步走向世界...", source: "韩国美食杂志", time: "15小时前", url: "https://example.com/news/korea/5" }
+        ];
+
         const mockAustraliaNews = [
             { title: "澳大利亚与中国恢复高层对话，经贸合作有望加强", content: "澳大利亚总理今日表示，澳方愿与中国恢复高层对话，加强经贸合作，这为两国关系改善带来积极信号...", source: "澳大利亚广播公司", time: "3小时前", url: "https://example.com/news/australia/1" },
             { title: "悉尼举办国际科技峰会，聚焦气候变化与可持续发展", content: "为期三天的悉尼国际科技峰会今日开幕，来自全球50多个国家和地区的1000多家企业参展，共同探讨气候变化与可持续发展...", source: "悉尼先驱晨报", time: "6小时前", url: "https://example.com/news/australia/2" },
@@ -275,10 +347,12 @@
         // 加载新闻函数
         function loadNews() {
             const chinaNewsContainer = document.getElementById('china-news');
+            const koreaNewsContainer = document.getElementById('korea-news');
             const australiaNewsContainer = document.getElementById('australia-news');
 
             // 清空加载状态
             chinaNewsContainer.innerHTML = '';
+            koreaNewsContainer.innerHTML = '';
             australiaNewsContainer.innerHTML = '';
 
             // 添加中国新闻
@@ -303,6 +377,30 @@
                     </a>
                 `;
                 chinaNewsContainer.appendChild(newsItem);
+            });
+
+            // 添加韩国新闻
+            mockKoreaNews.forEach(news => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0';
+                newsItem.innerHTML = `
+                    <a href="${news.url}" target="_blank" class="block hover:text-yellow-500 transition-colors">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 mr-3 mt-1 flex-shrink-0">
+                                <i class="fa fa-angle-right"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">${news.title}</h4>
+                                <p class="text-gray-500 text-sm mt-1">${news.content}</p>
+                                <div class="flex justify-between items-center text-xs text-gray-400 mt-2">
+                                    <span>${news.source}</span>
+                                    <span><i class="fa fa-clock-o mr-1"></i>${news.time}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                koreaNewsContainer.appendChild(newsItem);
             });
 
             // 添加澳大利亚新闻
@@ -336,7 +434,7 @@
             updateTime();
             // 每秒更新一次时间
             setInterval(updateTime, 1000);
-            
+
             // 加载新闻（模拟网络延迟）
             setTimeout(loadNews, 1500);
             // 每15分钟更新一次新闻
@@ -344,4 +442,4 @@
         });
     </script>
 </body>
-</html>    
+</html>
