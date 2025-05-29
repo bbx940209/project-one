@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时区新闻资讯</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        neutral: '#f3f4f6',
+                        dark: '#1f2937',
+                    },
+                    fontFamily: {
+                        digital: ['"DS-Digital"', 'monospace'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 0 10px currentColor;
+            }
+            .glass-effect {
+                backdrop-filter: blur(10px);
+                background-color: rgba(255, 255, 255, 0.7);
+            }
+            .news-card-hover {
+                transition: all 0.3s ease;
+            }
+            .news-card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'DS-Digital';
+            src: url('https://fonts.cdnfonts.com/css/ds-digital');
+        }
+    </style>
+	
+    <!-- 添加PWA相关代码 -->
+    <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered successfully:', registration);
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+	
+	    <!-- 添加iOS专用元标签 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="时区新闻资讯">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen font-inter">
+    <!-- 滚动指示器 -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <header class="text-center mb-12 pt-12">
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-2">
+            <i class="fa fa-globe mr-3"></i>全球时间与新闻
+        </h1>
+        <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+            实时掌握北京时间与澳大利亚时间，了解两地最新动态
+        </p>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- 时间显示区域 -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <!-- 北京时间 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl news-card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mr-3">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark">北京时间</h2>
+                </div>
+                <div class="bg-neutral rounded-lg p-4">
+                    <div id="beijing-time" class="text-[clamp(2.5rem,8vw,5rem)] font-digital text-primary text-shadow text-center">
+                        00:00:00
+                    </div>
+                    <div id="beijing-date" class="text-center text-gray-600 mt-2">
+                        2025年5月29日 星期四
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        <i class="fa fa-info-circle mr-1"></i>中国标准时间 (CST) UTC+8
+                    </div>
+                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fa fa-sun-o mr-1"></i>当前时区
+                    </div>
+                </div>
+            </div>
+
+            <!-- 澳大利亚时间 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl news-card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white mr-3">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark">澳大利亚时间</h2>
+                </div>
+                <div class="bg-neutral rounded-lg p-4">
+                    <div id="australia-time" class="text-[clamp(2.5rem,8vw,5rem)] font-digital text-secondary text-shadow text-center">
+                        00:00:00
+                    </div>
+                    <div id="australia-date" class="text-center text-gray-600 mt-2">
+                        2025年5月29日 星期四
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        <i class="fa fa-info-circle mr-1"></i>澳大利亚东部标准时间 (AEST) UTC+10
+                    </div>
+                    <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fa fa-compass mr-1"></i>目标时区
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 新闻区域 -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-dark mb-2">
+                    <i class="fa fa-newspaper-o text-primary mr-2"></i>热门新闻
+                </h2>
+                <p class="text-gray-600">为您提供北京和澳大利亚的最新资讯</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 中国新闻 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-primary text-white p-4">
+                        <div class="flex items-center">
+                            <i class="fa fa-newspaper-o mr-2"></i>
+                            <h2 class="text-xl font-semibold">中国热门新闻</h2>
+                        </div>
+                    </div>
+                    <div id="china-news" class="p-4 max-h-[500px] overflow-y-auto">
+                        <!-- 骨架屏加载状态 -->
+                        <div class="animate-pulse space-y-4">
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 澳大利亚新闻 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-secondary text-white p-4">
+                        <div class="flex items-center">
+                            <i class="fa fa-newspaper-o mr-2"></i>
+                            <h2 class="text-xl font-semibold">澳大利亚热门新闻</h2>
+                        </div>
+                    </div>
+                    <div id="australia-news" class="p-4 max-h-[500px] overflow-y-auto">
+                        <!-- 骨架屏加载状态 -->
+                        <div class="animate-pulse space-y-4">
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                            <div class="h-12 bg-gray-200 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-16 text-center text-gray-500 text-sm">
+        <p>© 2025 时区新闻资讯 | 数据仅供演示使用</p>
+    </footer>
+
+    <script>
+        // 更新滚动指示器
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scrollIndicator").style.width = scrolled + "%";
+        });
+        
+		// 更新时间函数
+        function updateTime() {
+            // 创建当前日期对象
+            const now = new Date();
+            
+            // 北京时间 (UTC+8)
+            const beijingTime = now.toLocaleString('zh-CN', {
+                timeZone: 'Asia/Shanghai',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const beijingDate = now.toLocaleDateString('zh-CN', {
+                timeZone: 'Asia/Shanghai',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            
+            // 澳大利亚时间 (UTC+10)
+            const australiaTime = now.toLocaleString('zh-CN', {
+                timeZone: 'Australia/Sydney',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const australiaDate = now.toLocaleDateString('zh-CN', {
+                timeZone: 'Australia/Sydney',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            
+            // 更新DOM
+            document.getElementById('beijing-time').textContent = beijingTime;
+            document.getElementById('beijing-date').textContent = beijingDate;
+            document.getElementById('australia-time').textContent = australiaTime;
+            document.getElementById('australia-date').textContent = australiaDate;
+        }
+
+        // 模拟新闻数据
+        const mockChinaNews = [
+            { title: "中国成功发射新一代载人飞船，开启太空探索新篇章", content: "据中国航天局消息，今日凌晨，我国新一代载人飞船成功发射升空，标志着我国太空探索进入新阶段...", source: "新华网", time: "2小时前", url: "https://example.com/news/china/1" },
+            { title: "北京冬奥会筹备进入冲刺阶段，各项设施已准备就绪", content: "随着冬奥会的临近，北京及张家口赛区的各项筹备工作正在有序进行，所有比赛场馆和基础设施已全部完工...", source: "央视新闻", time: "5小时前", url: "https://example.com/news/china/2" },
+            { title: "中国5G技术全球领先，已建成超过150万个5G基站", content: "工信部最新数据显示，我国5G技术已实现全球领先，5G基站数量超过150万个，覆盖全国所有地级市...", source: "人民日报", time: "8小时前", url: "https://example.com/news/china/3" },
+            { title: "长江流域生态保护取得显著成效，生物多样性逐步恢复", content: "据环保部门最新报告，长江流域生态保护工作取得显著成效，流域内生物多样性得到有效恢复...", source: "中国环境报", time: "10小时前", url: "https://example.com/news/china/4" },
+            { title: "中国新能源汽车销量连续8年全球第一，市场份额超50%", content: "中国汽车工业协会最新数据显示，我国新能源汽车销量连续8年位居全球第一，市场份额超过50%...", source: "经济日报", time: "12小时前", url: "https://example.com/news/china/5" }
+        ];
+
+        const mockAustraliaNews = [
+            { title: "澳大利亚与中国恢复高层对话，经贸合作有望加强", content: "澳大利亚总理今日表示，澳方愿与中国恢复高层对话，加强经贸合作，这为两国关系改善带来积极信号...", source: "澳大利亚广播公司", time: "3小时前", url: "https://example.com/news/australia/1" },
+            { title: "悉尼举办国际科技峰会，聚焦气候变化与可持续发展", content: "为期三天的悉尼国际科技峰会今日开幕，来自全球50多个国家和地区的1000多家企业参展，共同探讨气候变化与可持续发展...", source: "悉尼先驱晨报", time: "6小时前", url: "https://example.com/news/australia/2" },
+            { title: "澳大利亚东部遭遇罕见暴雨，多地出现洪涝灾害", content: "澳大利亚东部地区近日遭遇罕见暴雨袭击，多地出现严重洪涝灾害，数千居民被迫撤离...", source: "澳大利亚气象局", time: "9小时前", url: "https://example.com/news/australia/3" },
+            { title: "墨尔本大熊猫繁育基地迎来新成员，游客数量激增", content: "墨尔本动物园大熊猫繁育基地今日迎来一只新生熊猫幼崽，吸引大量游客前往参观...", source: "时代报", time: "11小时前", url: "https://example.com/news/australia/4" },
+            { title: "澳大利亚推出新的移民政策，吸引高技术人才", content: "澳大利亚政府今日宣布推出新的移民政策，将简化高技术人才移民流程，以应对劳动力短缺问题...", source: "澳大利亚移民局", time: "14小时前", url: "https://example.com/news/australia/5" }
+        ];
+
+        // 加载新闻函数
+        function loadNews() {
+            const chinaNewsContainer = document.getElementById('china-news');
+            const australiaNewsContainer = document.getElementById('australia-news');
+
+            // 清空加载状态
+            chinaNewsContainer.innerHTML = '';
+            australiaNewsContainer.innerHTML = '';
+
+            // 添加中国新闻
+            mockChinaNews.forEach(news => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0';
+                newsItem.innerHTML = `
+                    <a href="${news.url}" target="_blank" class="block hover:text-primary transition-colors">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 mt-1 flex-shrink-0">
+                                <i class="fa fa-angle-right"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">${news.title}</h4>
+                                <p class="text-gray-500 text-sm mt-1">${news.content}</p>
+                                <div class="flex justify-between items-center text-xs text-gray-400 mt-2">
+                                    <span>${news.source}</span>
+                                    <span><i class="fa fa-clock-o mr-1"></i>${news.time}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                chinaNewsContainer.appendChild(newsItem);
+            });
+
+            // 添加澳大利亚新闻
+            mockAustraliaNews.forEach(news => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0';
+                newsItem.innerHTML = `
+                    <a href="${news.url}" target="_blank" class="block hover:text-secondary transition-colors">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mr-3 mt-1 flex-shrink-0">
+                                <i class="fa fa-angle-right"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">${news.title}</h4>
+                                <p class="text-gray-500 text-sm mt-1">${news.content}</p>
+                                <div class="flex justify-between items-center text-xs text-gray-400 mt-2">
+                                    <span>${news.source}</span>
+                                    <span><i class="fa fa-clock-o mr-1"></i>${news.time}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                australiaNewsContainer.appendChild(newsItem);
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化时间
+            updateTime();
+            // 每秒更新一次时间
+            setInterval(updateTime, 1000);
+            
+            // 加载新闻（模拟网络延迟）
+            setTimeout(loadNews, 1500);
+            // 每15分钟更新一次新闻
+            setInterval(loadNews, 15 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>    
